@@ -2,9 +2,17 @@ import User from "../models/User.js";
 import Order from "../models/Order.js";
 
 export const addOrder = async (req, res) => {
-    const { userId, name, price, amount, category } = req.body;
+    const { userId, name, amount } = req.body;
     const userData = await User.findOne({ _id: userId });
+    let price;
+    let category;
     if (userData) {
+        if (name.includes("nasi")) {
+            (price = amount * 20000), (category = "main-course");
+        } else if (name.includes("minuman")) {
+            (price = amount * 10000), (category = "drinks");
+        }
+
         const newOrder = new Order({
             name,
             price,
@@ -46,7 +54,20 @@ export const addOrder = async (req, res) => {
 export const getAllOrders = async (req, res) => {
     try {
         const { userId } = req.body;
-        const userData = await User.findOne({ _id: userId }).populate("orders");
+        const userData = await User.findOne({ _id: userId }).populate({
+            path: "orders",
+            match: {
+                date: `${
+                    new Date().getDate() < 10
+                        ? "0" + new Date().getDate()
+                        : new Date().getDate()
+                }-${
+                    new Date().getMonth() < 10
+                        ? "0" + (new Date().getMonth() + 1)
+                        : new Date().getMonth() + 1
+                }-${new Date().getFullYear()}`,
+            },
+        });
         if (userData.orders.length > 0) {
             res.status(200).json({
                 status: "success",
@@ -180,15 +201,17 @@ export const searchOrders = async (req, res) => {
         await User.findOne({ _id: userId })
             .populate({
                 path: "orders",
-                match: { name: name },
             })
-            .then((orders) =>
+            .then((orders) => {
+                const result = orders.orders.filter((order) =>
+                    order.name.toLowerCase().includes(name.toLowerCase())
+                );
                 res.status(200).json({
                     status: "success",
                     message: "Orders fetched successfully",
-                    data: orders.orders,
-                })
-            )
+                    data: result,
+                });
+            })
             .catch(() =>
                 res.status(404).json({
                     status: "error",

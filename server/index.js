@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.options("*", cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(morgan("dev")); // logging http request
+// app.use(morgan("dev")); // logging http request
 
 // basic api endpoint
 app.get("/", (req, res) => {

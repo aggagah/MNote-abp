@@ -21,14 +21,15 @@ export const getUsers = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { userId, fullname, email, phone, password } = req.body;
+        const findUser = await User.findOne({ _id: userId });
         if (userId && fullname && email && phone && password) {
-            if (password.length < 30) {
+            if (password !== "default") {
                 await User.findOneAndUpdate(
                     { _id: userId },
                     {
                         fullname,
                         email,
-                        phone,
+                        phoneNumber: phone,
                         password: bcrypt.hashSync(password, 10),
                     },
                     {
@@ -55,7 +56,7 @@ export const updateProfile = async (req, res) => {
                     {
                         fullname,
                         email,
-                        phone,
+                        phoneNumber: phone,
                     },
                     {
                         returnOriginal: false,

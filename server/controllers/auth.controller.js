@@ -4,32 +4,31 @@ import User from "../models/User.js";
 export const Signin = async (req, res) => {
     try {
         const { username, password } = req.body;
-
+        console.log(password);
         if (username) {
             if (password) {
-                const user = await User.findOne({ username: username });
+                const user = await User.findOne({
+                    username: username,
+                });
                 if (user) {
-                    await bcrypt
-                        .compare(password, user.password)
-                        .then(() => {
-                            res.status(200).json({
-                                status: "success",
-                                message: "login successful",
-                                data: {
-                                    fullname: user.fullname,
-                                    email: user.email,
-                                    username: user.username,
-                                    phoneNumber: user.phoneNumber,
-                                },
-                            });
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            res.status(403).json({
-                                status: "failed",
-                                message: "password incorrect",
-                            });
+                    if (await bcrypt.compare(password, user.password)) {
+                        res.status(200).json({
+                            status: "success",
+                            message: "login successful",
+                            data: {
+                                _id: user._id,
+                                fullname: user.fullname,
+                                email: user.email,
+                                username: user.username,
+                                phoneNumber: user.phoneNumber,
+                            },
                         });
+                    } else {
+                        res.status(403).json({
+                            status: "failed",
+                            message: "password incorrect",
+                        });
+                    }
                 } else {
                     res.status(404).json({
                         status: "error",
@@ -39,7 +38,7 @@ export const Signin = async (req, res) => {
             }
         }
     } catch (error) {
-        consoe.log(error.message);
+        console.log(error.message);
     }
 };
 
