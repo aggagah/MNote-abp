@@ -2,7 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors	";
 import bodyParser from "body-parser";
-import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
+// import morgan from "morgan";
 import authRouter from "./routes/Auth.route.js";
 import orderRouter from "./routes/Order.route.js";
 import userRoute from "./routes/User.route.js";
@@ -17,15 +19,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // basic api endpoint
 app.get("/", (req, res) => {
-    res.status(200).json({ message: "OK" });
+    res.status(200).json({ message: "API MNote status: OK" });
 });
 
 // auth routes
-app.use("/auth", authRouter);
+app.use("/api/auth", authRouter);
 // order routes
-app.use("/orders", orderRouter);
+app.use("/api/orders", orderRouter);
 // user routes
-app.use("/users", userRoute);
+app.use("/api/users", userRoute);
 
 // connect to database
 mongoose
@@ -36,6 +38,6 @@ mongoose
     .then(() => {
         console.log("Connected to MongoDB");
         app.listen(process.env.PORT, () => {
-            console.log(`Server running on port ${process.env.PORT}`);
+            console.log(`Server running on localhost port ${process.env.PORT}`);
         });
     });

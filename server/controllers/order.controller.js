@@ -196,28 +196,50 @@ export const getOrdersByDateCategory = async (req, res) => {
 };
 
 export const searchOrders = async (req, res) => {
+    const resultData = [];
+
     try {
         const { userId, name } = req.body;
-        await User.findOne({ _id: userId })
-            .populate({
-                path: "orders",
-            })
-            .then((orders) => {
-                const result = orders.orders.filter((order) =>
-                    order.name.toLowerCase().includes(name.toLowerCase())
-                );
-                res.status(200).json({
-                    status: "success",
-                    message: "Orders fetched successfully",
-                    data: result,
-                });
-            })
-            .catch(() =>
-                res.status(404).json({
-                    status: "error",
-                    message: "No orders found",
-                })
-            );
+        const fetchedData = await User.findOne({ _id: userId }).populate({
+            path: "orders",
+        });
+        // console.log(fetchedData);
+        if (fetchedData.orders.length > 0) {
+            // const result = fetchedData.orders.filter((order) => {
+            //     order.name.toLowerCase().includes(name.toLowerCase());
+            // });
+            fetchedData.orders.forEach((element) => {
+                if (element.name.toLowerCase().includes(name.toLowerCase())) {
+                    resultData.push(element);
+                }
+            });
+            res.status(200).json({
+                status: "success",
+                message: "Orders fetched succesfully",
+                data: resultData,
+            });
+        } else {
+            res.status(404).json({
+                status: "error",
+                message: "No orders found",
+            });
+        }
+        // .then((orders) => {
+        //     const result = orders.orders.filter((order) =>
+        //         order.name.toLowerCase().includes(name.toLowerCase())
+        //     );
+        //     res.status(200).json({
+        //         status: "success",
+        //         message: "Orders fetched successfully",
+        //         data: result,
+        //     });
+        // })
+        // .catch(() =>
+        //     res.status(404).json({
+        //         status: "error",
+        //         message: "No orders found",
+        //     })
+        // );
     } catch (error) {
         console.log(error.message);
         res.status(500).json({

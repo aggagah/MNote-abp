@@ -4,7 +4,6 @@ import User from "../models/User.js";
 export const Signin = async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(password);
         if (username) {
             if (password) {
                 const user = await User.findOne({

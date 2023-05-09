@@ -6,10 +6,11 @@ import Search from "../pages/Search.jsx";
 import Settings from "../pages/Settings.jsx";
 import Help from "../pages/Help.jsx";
 import { BiUserCircle } from "react-icons/bi";
+import UserApi from "../api/UserApi.js";
 
 function Navbar() {
     const [path, setPath] = useState("");
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState("");
 
     const handlePath = () => {
         setPath(window.location.pathname);
@@ -20,9 +21,19 @@ function Navbar() {
         localStorage.removeItem("userId");
     };
 
+    const fetchUser = async () => {
+        await UserApi.post("/user", {
+            userId: localStorage.getItem("userId"),
+        }).then((response) => {
+            console.log(response.data.data.fullname);
+            setUser(response.data.data.fullname);
+        });
+    };
+
     useEffect(() => {
-        setUser(localStorage.getItem("user"));
-    }, []);
+        fetchUser();
+        // setUser(localStorage.getItem("user"));
+    }, [user]);
     return (
         <>
             {/* top */}

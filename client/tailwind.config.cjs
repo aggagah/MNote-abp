@@ -26,7 +26,7 @@ module.exports = {
                 label: "#4e4e4e",
             },
             fontFamily: {
-                regular: ["DM Sans"],
+                regular: ["DMSans-Regular.ttf"],
                 medium: ["DMSans-Medium.ttf"],
                 bold: ["DMSans-Bold.ttf"],
             },

@@ -44,10 +44,13 @@ function Settings() {
             username: user.username,
             phone: user.phoneNumber,
             password: updatedPassword,
+        }).then(() => {
+            localStorage.setItem("user", user.fullname);
         });
 
         setNewPassword("");
         setConfirmPassword("");
+        window.location.reload(true);
     };
 
     useEffect(() => {

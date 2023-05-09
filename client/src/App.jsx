@@ -29,22 +29,31 @@ function App() {
     const getAllOrders = async () => {
         await OrderApi.post("/order", {
             userId: localStorage.getItem("userId"),
-        }).then((res) => {
-            // console.log(res.data.data);
-            setData(res.data.data);
-        });
-        setLoadingToday(false);
+        })
+            .then((res) => {
+                console.log(res.data.data);
+                setData(res.data.data);
+                setLoadingToday(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoadingToday(false);
+            });
     };
 
     const getYesterdayOrders = async () => {
         await OrderApi.post("/order/orderbydate", {
             userId: localStorage.getItem("userId"),
             date: yesterday,
-        }).then((response) => {
-            setYesterdayData(response.data.data.orders);
-        });
-
-        setLoadingYesterday(false);
+        })
+            .then((response) => {
+                setYesterdayData(response.data.data.orders);
+                setLoadingYesterday(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoadingYesterday(false);
+            });
     };
 
     const change = (e) => {
